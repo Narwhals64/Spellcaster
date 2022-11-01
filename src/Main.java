@@ -9,19 +9,21 @@ public class Main {
     private static Board board;
     private static String[] dic;
     private static final String L25 = "ABCDEFGHIJKLMNOPQRSTUVWXY";
+    private static final String L26 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String T1 =  "CATXFXXXXXXXXXXXXXXXXXXXX";
     private static final String T2 =  "CATXFLMNOPAATAAAAALAAAAAY";
     private static final String T3 =  "CATXFLMNOPAATAAPAALAAAAAY";
+    private static final String T4 =  "CATXFLMNOPAATAAPAALAAAAAA";
 
     public static void main(String[] args) throws FileNotFoundException {
         initialize();
-        makeBoard(T3);
+        makeBoard(T4);
         tripleLetter(-1, -1);
         doubleWord(-1, -1);
 
         board.print();
 
-        Path word = findBestWord();
+        Path word = findBestSwap(board);
         System.out.println(word.word + " = " + word.getPoints());
 
     }
@@ -163,7 +165,7 @@ public class Main {
 
 
 
-    public static Path findBestWord() {
+    public static Path findBestWord(Board board) {
         ArrayList<Path> paths = new ArrayList<>();
         for (int y = 0 ; y < 5 ; y++) {
             for (int x = 0 ; x < 5 ; x++) {
@@ -231,7 +233,27 @@ public class Main {
         return null;
     }
 
+    public static Path findBestSwap(Board board) {
+        ArrayList<Path> paths = new ArrayList<>();
+        for (int y = 0 ; y < 5 ; y++) {
+            for (int x = 0 ; x < 5 ; x++) {
 
+                for (char c : L26.toCharArray()) {
+                    Board nb = new Board();
+                    board.copyTo(nb);
+
+                    nb.removeTile(x, y);
+                    nb.addTile(new Tile(x, y, c));
+
+                    Path newPath = findBestWord(nb);
+                    if (newPath != null)
+                        paths.add(newPath);
+
+                }
+            }
+        }
+        return paths.stream().max(Path::compareTo).get();
+    }
 
 
 
@@ -303,6 +325,12 @@ public class Main {
             this.p = 1;
 
             this.dw = false;
+
+            int ind = L26.indexOf(l);
+            //              A   B   C   D   E   F   G   H   I   J   K   L   M   N   O   P   Q   R   S   T   U   V   W   X   Y   Z
+            int[] values = {1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1};
+
+
         }
 
         public Tile(int x, int y, char l, int p) {
