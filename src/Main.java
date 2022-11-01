@@ -23,6 +23,7 @@ public class Main {
         unDic = new ArrayList<>();
         unDic.add("TURBETH");
 
+
         String grid =
                         "TMETF" +
                         "APIEM" +
@@ -31,24 +32,29 @@ public class Main {
                         "IRESN" ;
 
         initialize();
-        makeBoard(grid);
+        makeBoard(randomString());
         doubleLetter(-1,-1);
         tripleLetter(1, 2);
         doubleWord(2,3);
 
         board.print();
 
+        double m1 = System.currentTimeMillis();
         Path word = findBestWord(board);
+        double m2 = System.currentTimeMillis();
         Path swap = findBestSwap(board);
+        double m3 = System.currentTimeMillis();
         System.out.println(word.word + " = " + word.getPoints());
+        System.out.println("(" + (m2-m1) + " millis)");
         System.out.println(swap.word + " = " + swap.getPoints());
+        System.out.println("(" + (m3-m2) + " millis)");
 
     }
 
     public static void initialize() throws FileNotFoundException {
         ArrayList<String> dicList = new ArrayList<>();
 
-        File dicFile = new File("src/dictionary.txt");
+        File dicFile = new File("src/scrabbledic.txt");
         Scanner reader = new Scanner(dicFile);
         while (reader.hasNextLine()) {
             String word = reader.nextLine();
@@ -67,8 +73,6 @@ public class Main {
             i++;
         }
 
-        // T3:
-        //board.getTile(0,3).dw = false;
     }
 
     public static void doubleLetter(int x, int y) {
@@ -120,7 +124,7 @@ public class Main {
         return false;
     }
 
-    public static int firstOcc(String word) {
+    public static int firstOcc(String[] dic, String word) {
         int low = 0;
         int high = dic.length - 1;
         int index = -1;
@@ -145,7 +149,7 @@ public class Main {
         return -1;
     }
 
-    public static int lastOcc(String word) {
+    public static int lastOcc(String[] dic, String word) {
         int low = 0;
         int high = dic.length - 1;
         int index = -1;
@@ -176,9 +180,9 @@ public class Main {
      * @param prefix
      * @return
      */
-    public static String[] subDic(String prefix) {
-        int start = firstOcc(prefix);
-        int end = lastOcc(prefix);
+    public static String[] subDic(String[] dic, String prefix) {
+        int start = firstOcc(dic, prefix);
+        int end = lastOcc(dic, prefix);
 
         if (start == -1 || end == -1) {
             return new String[0];
@@ -187,8 +191,8 @@ public class Main {
         return Arrays.copyOfRange(dic, start, end+1);
     }
 
-    public static void listSubDic(String prefix) {
-        String[] newDic = subDic(prefix);
+    public static void listSubDic(String[] dic, String prefix) {
+        String[] newDic = subDic(dic, prefix);
         for (String s : newDic) {
             System.out.println(s);
         }
@@ -200,7 +204,7 @@ public class Main {
         ArrayList<Path> paths = new ArrayList<>();
         for (int y = 0 ; y < 5 ; y++) {
             for (int x = 0 ; x < 5 ; x++) {
-                Path newPath = findBestPath(board, x, y, new Path("", 0));
+                Path newPath = findBestPath(board, x, y, new Path("", 0), dic);
                 if (newPath != null)
                     paths.add(newPath);
             }
@@ -211,7 +215,41 @@ public class Main {
         return paths.stream().max(Path::compareTo).get();
     }
 
-    public static Path findBestPath(Board b, int x, int y, Path prefix) {
+    public static Path findBestSwap(Board board) {
+        ArrayList<Path> paths = new ArrayList<>();
+        for (int y = 0 ; y < 5 ; y++) {
+            for (int x = 0 ; x < 5 ; x++) {
+
+                char orig = board.getTile(x, y).l;
+
+                for (char c : L26.toCharArray()) {
+
+                    if (c == orig) {
+
+                    } else {
+
+                        Board nb = new Board();
+                        board.copyTo(nb);
+
+                        Tile ot = nb.removeTile(x, y); // Old Tile
+                        Tile nt = new Tile(x, y, c, 0); // New Tile
+                        nt.dw = ot.dw; // Copy Double Word
+                        nb.addTile(nt);
+
+                        Path newPath = findBestWord(nb);
+                        if (newPath != null) {
+                            paths.add(newPath);
+                        }
+
+                    }
+
+                }
+            }
+        }
+        return paths.stream().max(Path::compareTo).get();
+    }
+
+    public static Path findBestPath(Board b, int x, int y, Path prefix, String[] dic) {
 
         Board nb = new Board();
         b.copyTo(nb);
@@ -227,7 +265,7 @@ public class Main {
 
 
 
-        String[] subDic = subDic(word.word);
+        String[] subDic = subDic(dic, word.word);
 
         if (subDic.length == 0) { // No POTENTIAL words found!
             return null;
@@ -247,7 +285,7 @@ public class Main {
                     ) { // if in bounds
                         if (nb.hasTile(x + nx, y + ny)) { // If the tile isn't already part of the word
 
-                            Path newPath = findBestPath(nb, x + nx, y + ny, word);
+                            Path newPath = findBestPath(nb, x + nx, y + ny, word, subDic);
                             if (newPath != null) {
                                 paths.add(newPath);
                             }
@@ -268,30 +306,6 @@ public class Main {
         return null;
     }
 
-    public static Path findBestSwap(Board board) {
-        ArrayList<Path> paths = new ArrayList<>();
-        for (int y = 0 ; y < 5 ; y++) {
-            for (int x = 0 ; x < 5 ; x++) {
-
-                for (char c : L26.toCharArray()) {
-                    Board nb = new Board();
-                    board.copyTo(nb);
-
-                    nb.removeTile(x, y);
-                    Tile nt = new Tile(x, y, c);
-                    nt.p = 0;
-                    nb.addTile(nt);
-
-                    Path newPath = findBestWord(nb);
-                    if (newPath != null) {
-                        paths.add(newPath);
-                    }
-
-                }
-            }
-        }
-        return paths.stream().max(Path::compareTo).get();
-    }
 
 
 
