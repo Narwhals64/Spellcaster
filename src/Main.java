@@ -38,6 +38,7 @@ public class Main {
         doubleWord(2,3);
 
         board.print();
+        System.out.println("\n");
 
         double m1 = System.currentTimeMillis();
         Path word = findBestWord(board);
@@ -54,11 +55,11 @@ public class Main {
     public static void initialize() throws FileNotFoundException {
         ArrayList<String> dicList = new ArrayList<>();
 
-        File dicFile = new File("src/scrabbledic.txt");
+        File dicFile = new File("src/words_alpha.txt");
         Scanner reader = new Scanner(dicFile);
         while (reader.hasNextLine()) {
             String word = reader.nextLine();
-            dicList.add(word);
+            dicList.add(word.toUpperCase());
         }
         dic = dicList.toArray(new String[0]);
     }
@@ -422,9 +423,5 @@ public class Main {
             return this.p * this.wm - o.p * o.wm;
         }
     }
-
-
-
-
 
 }
