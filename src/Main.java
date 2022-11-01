@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
@@ -14,17 +15,20 @@ public class Main {
     private static final String T2 =  "CATXFLMNOPAATAAAAALAAAAAY";
     private static final String T3 =  "CATXFLMNOPAATAAPAALAAAAAY";
     private static final String T4 =  "CATXFLMNOPAATAAPAALAAAAAA";
+    private static final String T5 =  "BJWKVTRVKCJTDVBYGCUGYTVKS";
 
     public static void main(String[] args) throws FileNotFoundException {
         initialize();
-        makeBoard(T4);
+        makeBoard(randomString());
         tripleLetter(-1, -1);
         doubleWord(-1, -1);
 
         board.print();
 
-        Path word = findBestSwap(board);
+        Path word = findBestWord(board);
+        Path swap = findBestSwap(board);
         System.out.println(word.word + " = " + word.getPoints());
+        System.out.println(swap.word + " = " + swap.getPoints());
 
     }
 
@@ -64,6 +68,15 @@ public class Main {
         board.getTile(x, y).dw = true;
     }
 
+
+    public static String randomString() {
+        String output = "";
+        Random r = new Random();
+        for (int i = 0 ; i < 25 ; i++) {
+            output += L26.charAt(r.nextInt(26));
+        }
+        return output;
+    }
 
 
 
@@ -174,12 +187,18 @@ public class Main {
                     paths.add(newPath);
             }
         }
+
+        if (paths.isEmpty())
+            return null;
         return paths.stream().max(Path::compareTo).get();
     }
 
     public static Path findBestPath(Board b, int x, int y, Path prefix) {
 
-        Tile thisTile = b.removeTile(x, y);
+        Board nb = new Board();
+        b.copyTo(nb);
+
+        Tile thisTile = nb.removeTile(x, y);
         Path word = new Path(prefix.word + thisTile.l,
                 prefix.p + thisTile.p);
 
@@ -188,9 +207,7 @@ public class Main {
         }
 
 
-        Board nb = new Board();
-        b.copyTo(nb);
-        nb.removeTile(x, y);
+
 
         String[] subDic = subDic(word.word);
 
@@ -243,11 +260,14 @@ public class Main {
                     board.copyTo(nb);
 
                     nb.removeTile(x, y);
-                    nb.addTile(new Tile(x, y, c));
+                    Tile nt = new Tile(x, y, c);
+                    nt.p = 0;
+                    nb.addTile(nt);
 
                     Path newPath = findBestWord(nb);
-                    if (newPath != null)
+                    if (newPath != null) {
                         paths.add(newPath);
+                    }
 
                 }
             }
@@ -329,7 +349,7 @@ public class Main {
             int ind = L26.indexOf(l);
             //              A   B   C   D   E   F   G   H   I   J   K   L   M   N   O   P   Q   R   S   T   U   V   W   X   Y   Z
             int[] values = {1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1};
-
+            this.p = values[ind];
 
         }
 
