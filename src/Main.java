@@ -17,11 +17,24 @@ public class Main {
     private static final String T4 =  "CATXFLMNOPAATAAPAALAAAAAA";
     private static final String T5 =  "BJWKVTRVKCJTDVBYGCUGYTVKS";
 
+    private static ArrayList<String> unDic;
+
     public static void main(String[] args) throws FileNotFoundException {
+        unDic = new ArrayList<>();
+        unDic.add("TURBETH");
+
+        String grid =
+                        "TMETF" +
+                        "APIEM" +
+                        "XADIY" +
+                        "TWCPR" +
+                        "IRESN" ;
+
         initialize();
-        makeBoard(randomString());
-        tripleLetter(-1, -1);
-        doubleWord(-1,-1);
+        makeBoard(grid);
+        doubleLetter(-1,-1);
+        tripleLetter(1, 2);
+        doubleWord(2,3);
 
         board.print();
 
@@ -58,9 +71,14 @@ public class Main {
         //board.getTile(0,3).dw = false;
     }
 
-    public static void tripleLetter(int x, int y) {
+    public static void doubleLetter(int x, int y) {
         if (x == -1) return;
         board.getTile(x, y).p *= 2;
+    }
+
+    public static void tripleLetter(int x, int y) {
+        if (x == -1) return;
+        board.getTile(x, y).p *= 3;
     }
 
     public static void doubleWord(int x, int y) {
@@ -347,8 +365,10 @@ public class Main {
             this.dw = false;
 
             int ind = L26.indexOf(l);
-            //              A   B   C   D   E   F   G   H   I   J   K   L   M   N   O   P   Q   R   S   T   U   V   W   X   Y   Z
-            int[] values = {1,  3,  3,  2,  1,  4,  2,  4,  1,  8,  5,  1,  3,  1,  1,  3,  10, 1,  1,  1,  1,  4,  4,  8,  4,  10};
+            //                A   B   C   D   E   F   G   H   I   J   K   L   M   N   O   P   Q   R   S   T   U   V   W   X   Y   Z
+            //int[] values = {1,  3,  3,  2,  1,  4,  2,  4,  1,  8,  5,  1,  3,  1,  1,  3,  10, 1,  1,  1,  1,  4,  4,  8,  4,  10};
+            //                -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   Z
+              int[] values = {1,  4,  5,  3,  1,  5,  3,  4,  1,  7,  6,  3,  4,  2,  1,  4,  8,  2,  2,  2,  4,  5,  5,  7,  4,  10};
             this.p = values[ind];
 
         }
