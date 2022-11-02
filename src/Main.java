@@ -44,12 +44,13 @@ public class Main {
         tripleLetter(4,0);
         doubleWord(2,4);
 
+
         board.print();
         System.out.println("\n");
 
         findWords(dic2of12);
-        findWords(dic2of4);
-        findWords(dicmwords);
+        //findWords(dic2of4);
+        //findWords(dicmwords);
 
 
     }
@@ -290,11 +291,9 @@ public class Main {
         Path word = new Path(prefix.word + thisTile.l,
                 prefix.p + thisTile.p);
 
-        if (thisTile.dw) {
+        word.wm = Integer.max(word.wm, prefix.wm);
+        if (thisTile.dw)
             word.wm = 2;
-        }
-
-
 
 
         String[] subDic = subDic(dic, word.word);
@@ -447,7 +446,7 @@ public class Main {
         }
 
         int getPoints() {
-            return this.p * wm;
+            return this.p * this.wm;
         }
 
         @Override
