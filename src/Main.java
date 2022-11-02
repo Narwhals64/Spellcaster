@@ -22,23 +22,33 @@ public class Main {
 
     private static ArrayList<String> unDic;
 
+    /*
+
+    ANOQI
+    NRNTR
+    ZOODY
+    ATIAT
+    EGWRU
+
+     */
+
 
     public static void main(String[] args) throws FileNotFoundException {
         unDic = new ArrayList<>();
 
-        String grid = "EKIOAOISAUADTEZRCLVNYOWUL";
+        String grid = "ANOQINRNTRZOODYATIATEGWRU";
 
         initialize();
-        makeBoard(randomString());
-        doubleLetter(2,2);
-        tripleLetter(-1,3);
-        doubleWord(4,4);
+        makeBoard(grid);
+        doubleLetter(-1,3);
+        tripleLetter(4,0);
+        doubleWord(2,4);
 
         board.print();
         System.out.println("\n");
 
-        //findWords(dic2of12);
-        //findWords(dic2of4);
+        findWords(dic2of12);
+        findWords(dic2of4);
         findWords(dicmwords);
 
 
@@ -48,11 +58,11 @@ public class Main {
         double m1 = System.currentTimeMillis();
         Path word = findBestWord(board, dic);
         double m2 = System.currentTimeMillis();
-        //Path swap = findBestSwap(board, dic);
+        Path swap = findBestSwap(board, dic);
         double m3 = System.currentTimeMillis();
         System.out.println(word.word + " = " + word.getPoints());
         System.out.println("(" + (m2-m1) + " millis)");
-        //System.out.println(swap.word + " = " + swap.getPoints());
+        System.out.println(swap.word + " = " + swap.getPoints());
         System.out.println("(" + (m3-m2) + " millis)");
     }
 
