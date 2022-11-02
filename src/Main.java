@@ -9,6 +9,9 @@ public class Main {
 
     private static Board board;
     private static String[] dic;
+    private static String[] dic2of12;
+    private static String[] dic2of4;
+    private static String[] dicmwords;
     private static final String L25 = "ABCDEFGHIJKLMNOPQRSTUVWXY";
     private static final String L26 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String T1 =  "CATXFXXXXXXXXXXXXXXXXXXXX";
@@ -19,49 +22,66 @@ public class Main {
 
     private static ArrayList<String> unDic;
 
+
     public static void main(String[] args) throws FileNotFoundException {
         unDic = new ArrayList<>();
-        unDic.add("TURBETH");
 
-
-        String grid =
-                        "TMETF" +
-                        "APIEM" +
-                        "XADIY" +
-                        "TWCPR" +
-                        "IRESN" ;
+        String grid = "EKIOAOISAUADTEZRCLVNYOWUL";
 
         initialize();
         makeBoard(randomString());
-        doubleLetter(-1,-1);
-        tripleLetter(1, 2);
-        doubleWord(2,3);
+        doubleLetter(2,2);
+        tripleLetter(-1,3);
+        doubleWord(4,4);
 
         board.print();
         System.out.println("\n");
 
+        //findWords(dic2of12);
+        //findWords(dic2of4);
+        findWords(dicmwords);
+
+
+    }
+
+    public static void findWords(String[] dic) {
         double m1 = System.currentTimeMillis();
-        Path word = findBestWord(board);
+        Path word = findBestWord(board, dic);
         double m2 = System.currentTimeMillis();
-        Path swap = findBestSwap(board);
+        //Path swap = findBestSwap(board, dic);
         double m3 = System.currentTimeMillis();
         System.out.println(word.word + " = " + word.getPoints());
         System.out.println("(" + (m2-m1) + " millis)");
-        System.out.println(swap.word + " = " + swap.getPoints());
+        //System.out.println(swap.word + " = " + swap.getPoints());
         System.out.println("(" + (m3-m2) + " millis)");
-
     }
 
     public static void initialize() throws FileNotFoundException {
         ArrayList<String> dicList = new ArrayList<>();
 
-        File dicFile = new File("src/words_alpha.txt");
+        File dicFile = new File("src/2of4.txt");
         Scanner reader = new Scanner(dicFile);
         while (reader.hasNextLine()) {
             String word = reader.nextLine();
             dicList.add(word.toUpperCase());
         }
-        dic = dicList.toArray(new String[0]);
+        dic2of4 = dicList.toArray(new String[0]);
+
+        dicFile = new File("src/2of12.txt");
+        reader = new Scanner(dicFile);
+        while (reader.hasNextLine()) {
+            String word = reader.nextLine();
+            dicList.add(word.toUpperCase());
+        }
+        dic2of12 = dicList.toArray(new String[0]);
+
+        dicFile = new File("src/mwords.txt");
+        reader = new Scanner(dicFile);
+        while (reader.hasNextLine()) {
+            String word = reader.nextLine();
+            dicList.add(word.toUpperCase());
+        }
+        dicmwords = dicList.toArray(new String[0]);
     }
 
 
@@ -104,7 +124,7 @@ public class Main {
 
 
 
-    public static boolean isWord(String word) {
+    public static boolean isWord(String word, String[] dic) {
         int low = 0;
         int high = dic.length - 1;
         int index = -1;
@@ -201,10 +221,11 @@ public class Main {
 
 
 
-    public static Path findBestWord(Board board) {
+    public static Path findBestWord(Board board, String[] dic) {
         ArrayList<Path> paths = new ArrayList<>();
         for (int y = 0 ; y < 5 ; y++) {
             for (int x = 0 ; x < 5 ; x++) {
+
                 Path newPath = findBestPath(board, x, y, new Path("", 0), dic);
                 if (newPath != null)
                     paths.add(newPath);
@@ -216,7 +237,7 @@ public class Main {
         return paths.stream().max(Path::compareTo).get();
     }
 
-    public static Path findBestSwap(Board board) {
+    public static Path findBestSwap(Board board, String[] dic) {
         ArrayList<Path> paths = new ArrayList<>();
         for (int y = 0 ; y < 5 ; y++) {
             for (int x = 0 ; x < 5 ; x++) {
@@ -237,7 +258,7 @@ public class Main {
                         nt.dw = ot.dw; // Copy Double Word
                         nb.addTile(nt);
 
-                        Path newPath = findBestWord(nb);
+                        Path newPath = findBestWord(nb, dic);
                         if (newPath != null) {
                             paths.add(newPath);
                         }
@@ -274,7 +295,7 @@ public class Main {
 
             ArrayList<Path> paths = new ArrayList<>();
 
-            if (isWord(word.word)) {
+            if (isWord(word.word, dic)) {
                 paths.add(word);
             }
 
@@ -296,6 +317,8 @@ public class Main {
                 }
             }
 
+
+
             // paths now has a bunch of words, find the best one
 
             if (!paths.isEmpty())
@@ -306,7 +329,6 @@ public class Main {
 
         return null;
     }
-
 
 
 
