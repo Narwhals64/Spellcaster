@@ -19,19 +19,9 @@ public class Main {
     private static final String T3 =  "CATXFLMNOPAATAAPAALAAAAAY";
     private static final String T4 =  "CATXFLMNOPAATAAPAALAAAAAA";
     private static final String T5 =  "BJWKVTRVKCJTDVBYGCUGYTVKS";
+    private static final String T6 =  "ANOQINRNTRZOODYATIATEGWRU";
 
     private static ArrayList<String> unDic;
-
-    /*
-
-    ANOQI
-    NRNTR
-    ZOODY
-    ATIAT
-    EGWRU
-
-     */
-
 
     public static void main(String[] args) throws FileNotFoundException {
         unDic = new ArrayList<>();
@@ -39,10 +29,10 @@ public class Main {
         String grid = "ANOQINRNTRZOODYATIATEGWRU";
 
         initialize();
-        makeBoard(randomString());
+        makeBoard(grid);
         board.doubleLetter(-1,3);
         board.tripleLetter(2,1);
-        board.doubleWord(2,2);
+        board.doubleWord(2,4);
 
 
         board.print();
