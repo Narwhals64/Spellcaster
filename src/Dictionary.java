@@ -141,4 +141,11 @@ public class Dictionary implements Iterable<String> {
     public Iterator<String> iterator() {
         return Arrays.stream(this.dic).iterator();
     }
+
+    public static void listSubDic(Dictionary dic, String prefix) {
+        Dictionary newDic = dic.subDic(prefix);
+        for (String s : newDic) {
+            System.out.println(s);
+        }
+    }
 }

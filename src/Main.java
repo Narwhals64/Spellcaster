@@ -49,9 +49,8 @@ public class Main {
         System.out.println("\n");
 
         findWords(board, dic2of12);
-
-        //findWords(dic2of4);
-        //findWords(dicmwords);
+        //findWords(board, dic2of4);
+        //findWords(board, dicmwords);
 
 
     }
@@ -78,7 +77,6 @@ public class Main {
         dicmwords = new Dictionary("src/mwords.txt");
     }
 
-
     public static void makeBoard(String letStr) {
         board = new Board();
 
@@ -90,9 +88,6 @@ public class Main {
 
     }
 
-
-
-
     public static String randomString() {
         String output = "";
         Random r = new Random();
@@ -101,14 +96,5 @@ public class Main {
         }
         return output;
     }
-
-
-    public static void listSubDic(Dictionary dic, String prefix) {
-        Dictionary newDic = dic.subDic(prefix);
-        for (String s : newDic) {
-            System.out.println(s);
-        }
-    }
-
 
 }
