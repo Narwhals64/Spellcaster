@@ -11,11 +11,12 @@ public class Path implements Comparable<Path> {
     }
 
     int getPoints() {
-        return this.p * this.wm;
+        int bonus = word.length() >= 7 ? 20 : 0;
+        return this.p * this.wm + bonus;
     }
 
     @Override
     public int compareTo(Path o) {
-        return this.p * this.wm - o.p * o.wm;
+        return getPoints() - o.getPoints();
     }
 }

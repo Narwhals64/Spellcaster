@@ -1,9 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
@@ -26,14 +23,10 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         unDic = new ArrayList<>();
 
-        String grid = "ANOQINRNTRZOODYATIATEGWRU";
+        String grid = "OAAUEDVUA*NINNITXVUYB3TRAHA";
 
         initialize();
         makeBoard(grid);
-        board.doubleLetter(-1,3);
-        board.tripleLetter(2,1);
-        board.doubleWord(2,4);
-
 
         board.print();
         System.out.println("\n");
@@ -70,10 +63,32 @@ public class Main {
     public static void makeBoard(String letStr) {
         board = new Board();
 
-        int i = 0;
-        for (char c : letStr.toCharArray()) {
-            board.addTile(new Tile(i%5, i/5, c));
-            i++;
+        int x = 0;
+        int y = 0;
+
+        for (int i = 0 ; i < letStr.length() ; i++) {
+            char c = letStr.charAt(i);
+            if (c == '*') {
+                board.addTile(new Tile(x, y, letStr.charAt(i+1)));
+                board.getTile(x, y).dw = true;
+                i++;
+            } else if (c == '2') {
+                board.addTile(new Tile(x, y, letStr.charAt(i+1)));
+                board.getTile(x, y).p *= 2;
+                i++;
+            } else if (c == '3') {
+                board.addTile(new Tile(x, y, letStr.charAt(i+1)));
+                board.getTile(x, y).p *= 3;
+                i++;
+            } else {
+                board.addTile(new Tile(x, y, c));
+            }
+
+            x++;
+            if (x == 5){
+                x = 0;
+                y++;
+            }
         }
 
     }

@@ -116,7 +116,6 @@ public class Board {
 
 
             // paths now has a bunch of words, find the best one
-
             if (!paths.isEmpty())
                 return paths.stream().max(Path::compareTo).get();
 
